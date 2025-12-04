@@ -6,19 +6,25 @@ spring:
 
   # JPA (Java Persistence API) 관련 설정
   jpa:
+    hibernate:
+      ddl-auto: update
     # 실행되는 SQL 쿼리를 로그에 표시할지 여부 설정
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
 
   # 데이터베이스 연결 정보 설정
   datasource:
     # JDBC 드라이버 클래스 이름
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 데이터베이스 연결 URL
-    url: jdbc:mysql://localhost:3306/voting_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/${DATABASE_NAME}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     # 데이터베이스 사용자 이름
-    username: app_user
+    username: ${DATABASE_USERNAME}
     # 데이터베이스 비밀번호
-    password: password1234
+    password: ${DATABASE_PASSWORD}
 
 # 로깅 관련 설정
 logging:
