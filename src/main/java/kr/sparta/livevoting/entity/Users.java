@@ -25,7 +25,22 @@ public class Users extends BaseTimeEntity{
     @Column(nullable = false)
     private String nickname;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role;
+
     @OneToMany(mappedBy = "author")
     private List<Vote> votes; // 사용자가 생성한 Vote 리스트
 
+    public Users(String loginId, String password, String nickname) {
+        this.loginId = loginId;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = UserRole.USER;
+    }
+
+    enum UserRole {
+        USER,
+        ADMIN
+    }
 }
