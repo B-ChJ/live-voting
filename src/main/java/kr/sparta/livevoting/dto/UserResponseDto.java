@@ -1,14 +1,14 @@
 package kr.sparta.livevoting.dto;
 
-import kr.sparta.livevoting.entity.User;
+import kr.sparta.livevoting.entity.Users;
 public record UserResponseDto(
         String id,
         String name
 ) {
-    public static UserResponseDto from(User user) {
+    public static UserResponseDto from(Users users) {
         return new UserResponseDto(
-                user.getLoginId(),
-                user.getNickname()
+                users.getLoginId(),
+                users.getNickname()
         );
     }
 }
