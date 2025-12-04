@@ -41,3 +41,8 @@ logging:
           descriptor:
             # Hibernate SQL 파라미터 바인딩 로그 레벨
             sql: trace
+
+jwt:
+  header: Authorization
+  secret: ${JWT_SECRET_KEY}
+  token-validity-in-seconds: 3600
