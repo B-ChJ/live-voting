@@ -1,5 +1,6 @@
 package kr.sparta.livevoting.service;
 
+import kr.sparta.livevoting.dto.vote.VoteInfoResponse;
 import kr.sparta.livevoting.dto.vote.VoteRequest;
 import kr.sparta.livevoting.dto.vote.VoteResponse;
 import kr.sparta.livevoting.entity.Candidate;
@@ -40,5 +41,13 @@ public class VoteService {
         Vote savedVote = voteRepository.save(vote);
 
         return new VoteResponse(savedVote.getId());
+    }
+
+    public List<VoteInfoResponse> getVotes() {
+        List<Vote> votes = voteRepository.findAll();
+
+        return votes.stream()
+                .map(VoteInfoResponse::from)
+                .toList();
     }
 }
