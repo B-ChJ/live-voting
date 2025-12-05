@@ -33,8 +33,7 @@ public class VoteService {
 
     public CreateVoteResponse create(CreateVoteRequest request) {
 
-        Users author = userRepository.findByLoginId(request.getAuthorId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Users author = findUser(request.getAuthorId());
 
         Vote vote = new Vote(request.getTitle());
         vote.setAuthor(author);
@@ -59,8 +58,7 @@ public class VoteService {
     }
 
     public VoteDetailsResponse getVoteDetails(Long voteId) {
-        Vote vote = voteRepository.findById(voteId).orElseThrow(
-                () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Vote vote = findVote(voteId);
 
         List<Candidate> candidateList = vote.getCandidateList();
         List<CandidateInfoResponse> candidates = candidateList.stream()
@@ -74,11 +72,9 @@ public class VoteService {
 
     public VotedResponse voteTo(Long voteId, VoteToRequest request) {
 
-        Vote vote = voteRepository.findById(voteId).orElseThrow(
-                    () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Vote vote = findVote(voteId);
 
-        Users user = userRepository.findByLoginId(request.getVoterId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Users user = findUser(request.getVoterId());
 
         Candidate candidate = candidateService.findCandidate(request.getCandidateId());
 
@@ -95,5 +91,26 @@ public class VoteService {
         VoteRecord savedRecord = voteRecordRepository.save(voteRecord);
 
         return VotedResponse.from(savedRecord);
+    }
+
+    public VotedResponse getRecord(Long voteId, String voterId) {
+        Vote vote = findVote(voteId);
+        Users user = findUser(voterId);
+
+        VoteRecord record = voteRecordRepository.findByVoteAndUser(vote, user).orElse(null);
+
+        if(record == null) {return null;}
+
+        return VotedResponse.from(record);
+    }
+
+    private Users findUser(String loginId) {
+        return userRepository.findByLoginId(loginId).orElseThrow(
+                () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private Vote findVote(Long voteId) {
+        return voteRepository.findById(voteId).orElseThrow(
+                () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 }

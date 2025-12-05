@@ -42,4 +42,16 @@ public class VoteController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/{voteId}/vote-record")
+    public ResponseEntity<VotedResponse> getVoteRecord(@PathVariable Long voteId, @RequestParam String voterId) {
+
+        VotedResponse response = voteService.getRecord(voteId, voterId);
+
+        if(response == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
