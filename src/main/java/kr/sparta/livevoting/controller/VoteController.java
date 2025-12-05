@@ -19,7 +19,7 @@ public class VoteController {
     private final VoteService voteService;
 
     @PostMapping
-    public ResponseEntity<CommonResponse> createVote(@RequestBody VoteRequest request) {
+    public ResponseEntity<CommonResponse<VoteResponse>> createVote(@RequestBody VoteRequest request) {
         VoteResponse response = voteService.create(request);
 
         CommonResponse<VoteResponse> body = CommonResponse.<VoteResponse>builder()
