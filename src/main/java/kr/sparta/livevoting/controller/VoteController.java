@@ -1,9 +1,6 @@
 package kr.sparta.livevoting.controller;
 
-import kr.sparta.livevoting.dto.vote.CreateVoteRequest;
-import kr.sparta.livevoting.dto.vote.CreateVoteResponse;
-import kr.sparta.livevoting.dto.vote.VoteDetailsResponse;
-import kr.sparta.livevoting.dto.vote.VoteInfoResponse;
+import kr.sparta.livevoting.dto.vote.*;
 import kr.sparta.livevoting.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +20,13 @@ public class VoteController {
         CreateVoteResponse response = voteService.create(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/{voteId}/vote")
+    public ResponseEntity<VotedResponse> vote(@PathVariable Long voteId, @RequestBody VoteToRequest request) {
+        VotedResponse response = voteService.voteTo(voteId, request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping

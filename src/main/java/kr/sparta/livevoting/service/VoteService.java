@@ -1,16 +1,15 @@
 package kr.sparta.livevoting.service;
 
 import kr.sparta.livevoting.dto.candidate.CandidateInfoResponse;
-import kr.sparta.livevoting.dto.vote.CreateVoteRequest;
-import kr.sparta.livevoting.dto.vote.CreateVoteResponse;
-import kr.sparta.livevoting.dto.vote.VoteDetailsResponse;
-import kr.sparta.livevoting.dto.vote.VoteInfoResponse;
+import kr.sparta.livevoting.dto.vote.*;
 import kr.sparta.livevoting.entity.Candidate;
 import kr.sparta.livevoting.entity.Users;
 import kr.sparta.livevoting.entity.Vote;
+import kr.sparta.livevoting.entity.VoteRecord;
 import kr.sparta.livevoting.exception.BusinessException;
 import kr.sparta.livevoting.exception.ErrorCode;
 import kr.sparta.livevoting.repository.UserRepository;
+import kr.sparta.livevoting.repository.VoteRecordRepository;
 import kr.sparta.livevoting.repository.VoteRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +20,15 @@ public class VoteService {
     private final VoteRepository voteRepository;
     private final UserRepository userRepository;
     private final CandidateService candidateService;
+    private final VoteRecordRepository voteRecordRepository;
 
     public VoteService(VoteRepository voteRepository,
                        UserRepository userRepository,
-                       CandidateService candidateService) {
+                       CandidateService candidateService, VoteRecordRepository voteRecordRepository) {
         this.voteRepository = voteRepository;
         this.userRepository = userRepository;
         this.candidateService = candidateService;
+        this.voteRecordRepository = voteRecordRepository;
     }
 
     public CreateVoteResponse create(CreateVoteRequest request) {
@@ -69,5 +70,30 @@ public class VoteService {
         int totalVotes = vote.getVoteRecordList().size();
 
         return VoteDetailsResponse.from(vote, candidates, totalVotes);
+    }
+
+    public VotedResponse voteTo(Long voteId, VoteToRequest request) {
+
+        Vote vote = voteRepository.findById(voteId).orElseThrow(
+                    () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        Users user = userRepository.findByLoginId(request.getVoterId()).orElseThrow(
+                () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        Candidate candidate = candidateService.findCandidate(request.getCandidateId());
+
+        if(voteRecordRepository.existsByVoteAndUser(vote, user)) {
+            VoteRecord updateVoteRecord = voteRecordRepository.findByVoteAndUser(vote, user).orElseThrow(
+                    () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+            updateVoteRecord.setCandidate(candidate);
+
+            return VotedResponse.from(updateVoteRecord);
+        }
+
+        VoteRecord voteRecord = new VoteRecord(user, vote, candidate);
+        VoteRecord savedRecord = voteRecordRepository.save(voteRecord);
+
+        return VotedResponse.from(savedRecord);
     }
 }

@@ -26,7 +26,7 @@ public class Vote extends BaseTimeEntity{
     @JoinColumn(name = "author_id")
     private Users author;
 
-    @OneToMany(mappedBy = "vote")
+    @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL)
     private List<VoteRecord> voteRecordList;
 
     @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL, orphanRemoval = true)
