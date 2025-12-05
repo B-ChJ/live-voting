@@ -3,10 +3,10 @@ package kr.sparta.livevoting.dto.vote;
 import lombok.Getter;
 
 @Getter
-public class VoteResponse {
+public class CreateVoteResponse {
     private final Long id;
 
-    public VoteResponse(Long id) {
+    public CreateVoteResponse(Long id) {
         this.id = id;
     }
 }

@@ -1,8 +1,10 @@
 package kr.sparta.livevoting.service;
 
+import kr.sparta.livevoting.dto.candidate.CandidateInfoResponse;
+import kr.sparta.livevoting.dto.vote.CreateVoteRequest;
+import kr.sparta.livevoting.dto.vote.CreateVoteResponse;
+import kr.sparta.livevoting.dto.vote.VoteDetailsResponse;
 import kr.sparta.livevoting.dto.vote.VoteInfoResponse;
-import kr.sparta.livevoting.dto.vote.VoteRequest;
-import kr.sparta.livevoting.dto.vote.VoteResponse;
 import kr.sparta.livevoting.entity.Candidate;
 import kr.sparta.livevoting.entity.Users;
 import kr.sparta.livevoting.entity.Vote;
@@ -18,13 +20,17 @@ import java.util.List;
 public class VoteService {
     private final VoteRepository voteRepository;
     private final UserRepository userRepository;
+    private final CandidateService candidateService;
 
-    public VoteService(VoteRepository voteRepository, UserRepository userRepository) {
+    public VoteService(VoteRepository voteRepository,
+                       UserRepository userRepository,
+                       CandidateService candidateService) {
         this.voteRepository = voteRepository;
         this.userRepository = userRepository;
+        this.candidateService = candidateService;
     }
 
-    public VoteResponse create(VoteRequest request) {
+    public CreateVoteResponse create(CreateVoteRequest request) {
 
         Users author = userRepository.findByLoginId(request.getAuthorId()).orElseThrow(
                 () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -40,7 +46,7 @@ public class VoteService {
 
         Vote savedVote = voteRepository.save(vote);
 
-        return new VoteResponse(savedVote.getId());
+        return new CreateVoteResponse(savedVote.getId());
     }
 
     public List<VoteInfoResponse> getVotes() {
@@ -49,5 +55,19 @@ public class VoteService {
         return votes.stream()
                 .map(VoteInfoResponse::from)
                 .toList();
+    }
+
+    public VoteDetailsResponse getVoteDetails(Long voteId) {
+        Vote vote = voteRepository.findById(voteId).orElseThrow(
+                () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        List<Candidate> candidateList = vote.getCandidateList();
+        List<CandidateInfoResponse> candidates = candidateList.stream()
+                .map(candidateService::countVotes)
+                .toList();
+
+        int totalVotes = vote.getVoteRecordList().size();
+
+        return VoteDetailsResponse.from(vote, candidates, totalVotes);
     }
 }
