@@ -11,7 +11,7 @@ public class CandidateInfoResponse {
     private final String name;
     private final int voteCount;
 
-    public static CandidateInfoResponse from(Candidate candidate) {
+    public static CandidateInfoResponse from(Candidate candidate, int voteCount) {
         return new CandidateInfoResponse(candidate.getId(),
                 candidate.getName(),
                 voteCount);

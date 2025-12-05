@@ -14,8 +14,7 @@ public class CandidateService {
     }
 
     public CandidateInfoResponse countVotes(Candidate candidate) {
-        return new CandidateInfoResponse(candidate.getId(),
-                candidate.getName(),
+        return CandidateInfoResponse.from(candidate,
                 voteRecordRepository.countByCandidate(candidate));
     }
 }
