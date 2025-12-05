@@ -29,8 +29,21 @@ public class Vote extends BaseTimeEntity{
     @OneToMany(mappedBy = "vote")
     private List<VoteRecord> voteRecordList;
 
-    @OneToMany(mappedBy = "vote")
+    @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Candidate> candidateList;
+
+    public Vote(String title) {
+        this.title = title;
+        this.status = VoteStatus.OPEN;
+    }
+
+    public void setAuthor(Users author) {
+        this.author = author;
+    }
+
+    public void setCandidateList(List<Candidate> candidateList) {
+        this.candidateList = candidateList;
+    }
 
     public enum VoteStatus {
         OPEN, CLOSED

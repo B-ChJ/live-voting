@@ -19,4 +19,9 @@ public class Candidate {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Vote vote;
+
+    public Candidate(String name, Vote vote) {
+        this.name = name;
+        this.vote = vote;
+    }
 }
