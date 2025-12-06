@@ -11,6 +11,7 @@ import kr.sparta.livevoting.exception.ErrorCode;
 import kr.sparta.livevoting.repository.UserRepository;
 import kr.sparta.livevoting.repository.VoteRecordRepository;
 import kr.sparta.livevoting.repository.VoteRepository;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,14 +22,16 @@ public class VoteService {
     private final UserRepository userRepository;
     private final CandidateService candidateService;
     private final VoteRecordRepository voteRecordRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     public VoteService(VoteRepository voteRepository,
                        UserRepository userRepository,
-                       CandidateService candidateService, VoteRecordRepository voteRecordRepository) {
+                       CandidateService candidateService, VoteRecordRepository voteRecordRepository, SimpMessagingTemplate simpMessagingTemplate) {
         this.voteRepository = voteRepository;
         this.userRepository = userRepository;
         this.candidateService = candidateService;
         this.voteRecordRepository = voteRecordRepository;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     public CreateVoteResponse create(CreateVoteRequest request) {
@@ -83,12 +86,20 @@ public class VoteService {
                     () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
             updateVoteRecord.setCandidate(candidate);
+            voteRecordRepository.save(updateVoteRecord);
+
+            String message = user.getNickname() + "님이 " + vote.getTitle() + " 투표에 다시 참여하셨습니다.";
+            simpMessagingTemplate.convertAndSend("/topic/announcements", message);
+            System.out.println(message);
 
             return VotedResponse.from(updateVoteRecord);
         }
 
         VoteRecord voteRecord = new VoteRecord(user, vote, candidate);
         VoteRecord savedRecord = voteRecordRepository.save(voteRecord);
+
+        String message = user.getNickname() + "님이 " + vote.getTitle() + " 투표에 참여하셨습니다.";
+        simpMessagingTemplate.convertAndSend("/topic/announcements", message);
 
         return VotedResponse.from(savedRecord);
     }
