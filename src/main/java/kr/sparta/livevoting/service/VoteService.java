@@ -115,6 +115,19 @@ public class VoteService {
         return VotedResponse.from(record);
     }
 
+    public ClosedVoteResponse close(Long voteId, CloseVoteRequest request) {
+        Vote vote = findVote(voteId);
+
+        if(!request.getAuthorId().equals(vote.getAuthor().getLoginId())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_AUTHOR_ONLY);
+        }
+
+        vote.setStatus(Vote.VoteStatus.CLOSED);
+        voteRepository.save(vote);
+
+        return ClosedVoteResponse.from(vote);
+    }
+
     private Users findUser(String loginId) {
         return userRepository.findByLoginId(loginId).orElseThrow(
                 () -> new BusinessException(ErrorCode.USER_NOT_FOUND));
