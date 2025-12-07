@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
-@RestControllerAdvice
+@RestControllerAdvice // 예외 처리와 응답을 전역적으로 관리할 수 있도록 해준다.
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BusinessException.class)
+    @ExceptionHandler(BusinessException.class) // 컨트롤러에서 발생하는 예외(BusinessException 등)를 처리해준다.
     public ResponseEntity<ErrorResponseDto> handleBusinessException(BusinessException ex, HttpServletRequest request) {
 
         ErrorResponseDto errorResponse = new ErrorResponseDto(LocalDateTime.now(),

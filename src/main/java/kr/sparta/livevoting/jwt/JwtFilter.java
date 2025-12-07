@@ -11,7 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
+@Component // 해당 클래스를 Bean으로 등록한다.
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
@@ -19,7 +19,7 @@ public class JwtFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
-    @Override
+    @Override // 상위 클래스, 또는 인터페이스의 메서드를 재정의한다.
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 

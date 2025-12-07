@@ -8,7 +8,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component // 해당 클래스를 Bean으로 등록한다.
 public class StompHandler implements ChannelInterceptor {
     private final JwtUtil jwtUtil;
 
@@ -16,7 +16,7 @@ public class StompHandler implements ChannelInterceptor {
         this.jwtUtil = jwtUtil;
     }
 
-    @Override
+    @Override // 상위 클래스, 또는 인터페이스의 메서드를 재정의한다.
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);

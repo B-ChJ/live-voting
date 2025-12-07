@@ -15,7 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service // 해당 클래스가 Component 중 Service 역할임을 명시해준다.
 public class AuthService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;

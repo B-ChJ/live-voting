@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service // 해당 클래스가 Component 중 Service 역할임을 명시해준다.
 public class VoteService {
     private final VoteRepository voteRepository;
     private final UserRepository userRepository;
