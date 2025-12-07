@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/votes")
-@RequiredArgsConstructor
+@RestController // HTTP 요청과 응답을 처리·반환하는 컨트롤러임을 나타냄 = (@Controller + @ResponseBody)
+// REST API를 제공한다.
+@RequestMapping("/api/votes") // HTTP 요청을 각 컨트롤러 메서드와 연결(Mapping)해준다. (기본 경로 설정)
+@RequiredArgsConstructor // 필수 필드(final, @NotNull 등)의 생성자를 자동으로 만들어준다.
 public class VoteController {
     private final VoteService voteService;
 
-    @PostMapping
+    @PostMapping // HTTP POST 요청을 지정 경로와 연결해준다.
     public ResponseEntity<CreateVoteResponse> createVote(@RequestBody CreateVoteRequest request) {
 
         CreateVoteResponse response = voteService.create(request);
@@ -31,7 +32,7 @@ public class VoteController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping
+    @GetMapping // HTTP GET 요청을 지정 경로와 연결해준다.
     public ResponseEntity<List<VoteInfoResponse>> getVotes() {
 
         List<VoteInfoResponse> votes = voteService.getVotes();
@@ -59,7 +60,7 @@ public class VoteController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PatchMapping("/{voteId}/close")
+    @PatchMapping("/{voteId}/close") // HTTP PATCH 요청을 지정 경로와 연결해준다.
     public ResponseEntity<ClosedVoteResponse> closeVote(@PathVariable Long voteId,
                                                         @RequestBody CloseVoteRequest request) {
 

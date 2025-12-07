@@ -8,7 +8,7 @@ import kr.sparta.livevoting.repository.CandidateRepository;
 import kr.sparta.livevoting.repository.VoteRecordRepository;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service // 해당 클래스가 Component 중 Service 역할임을 명시해준다.
 public class CandidateService {
     private final CandidateRepository candidateRepository;
     private final VoteRecordRepository voteRecordRepository;

@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-@Component
+@Component // 해당 클래스를 Bean으로 등록한다.
 public class JwtUtil {
     private final SecretKey key;
     private final long accessExpiration;

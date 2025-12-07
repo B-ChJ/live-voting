@@ -9,7 +9,7 @@ public class StompPrincipal implements Principal {
         this.userId = userId;
     }
 
-    @Override
+    @Override // 상위 클래스, 또는 인터페이스의 메서들르 재정의한다.
     public String getName() {
         return String.valueOf(userId);
     }

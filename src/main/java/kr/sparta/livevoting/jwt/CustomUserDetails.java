@@ -23,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
         return loginId;
     }
 
-    @Override
+    @Override // 상위 클래스, 또는 인터페이스의 메서드를 재정의한다.
     public String getUsername() {
         return loginId;
     }
