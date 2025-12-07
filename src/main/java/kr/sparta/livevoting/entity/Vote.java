@@ -45,6 +45,10 @@ public class Vote extends BaseTimeEntity{
         this.candidateList = candidateList;
     }
 
+    public void setStatus(VoteStatus status) {
+        this.status = status;
+    }
+
     public enum VoteStatus {
         OPEN, CLOSED
     }

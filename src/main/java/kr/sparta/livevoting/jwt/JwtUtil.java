@@ -94,4 +94,10 @@ public class JwtUtil {
         }
         return null;
     }
+
+    public Long getUserId(String token) {
+        String strUserId = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getSubject();
+
+        return Long.parseLong(strUserId);
+    }
 }

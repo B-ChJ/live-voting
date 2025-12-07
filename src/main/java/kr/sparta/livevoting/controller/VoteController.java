@@ -17,6 +17,7 @@ public class VoteController {
 
     @PostMapping
     public ResponseEntity<CreateVoteResponse> createVote(@RequestBody CreateVoteRequest request) {
+
         CreateVoteResponse response = voteService.create(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -24,6 +25,7 @@ public class VoteController {
 
     @PostMapping("/{voteId}/vote")
     public ResponseEntity<VotedResponse> vote(@PathVariable Long voteId, @RequestBody VoteToRequest request) {
+
         VotedResponse response = voteService.voteTo(voteId, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -31,6 +33,7 @@ public class VoteController {
 
     @GetMapping
     public ResponseEntity<List<VoteInfoResponse>> getVotes() {
+
         List<VoteInfoResponse> votes = voteService.getVotes();
 
         return ResponseEntity.status(HttpStatus.OK).body(votes);
@@ -38,6 +41,7 @@ public class VoteController {
 
     @GetMapping("/{voteId}")
     public ResponseEntity<VoteDetailsResponse> getVoteDetails(@PathVariable Long voteId) {
+
         VoteDetailsResponse response = voteService.getVoteDetails(voteId);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -51,6 +55,15 @@ public class VoteController {
         if(response == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PatchMapping("/{voteId}/close")
+    public ResponseEntity<ClosedVoteResponse> closeVote(@PathVariable Long voteId,
+                                                        @RequestBody CloseVoteRequest request) {
+
+        ClosedVoteResponse response = voteService.close(voteId, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
