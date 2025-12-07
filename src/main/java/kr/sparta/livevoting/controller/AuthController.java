@@ -1,8 +1,10 @@
 package kr.sparta.livevoting.controller;
 
 import kr.sparta.livevoting.dto.CommonResponse;
+import kr.sparta.livevoting.dto.auth.LoginRequest;
 import kr.sparta.livevoting.dto.auth.SignUpRequest;
 import kr.sparta.livevoting.dto.auth.SignUpResponse;
+import kr.sparta.livevoting.dto.auth.TokenResponse;
 import kr.sparta.livevoting.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,5 +29,16 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<CommonResponse<TokenResponse>> login(@RequestBody LoginRequest request) {
+        TokenResponse token = authService.login(request);
+
+        CommonResponse<TokenResponse> body = CommonResponse.<TokenResponse>builder()
+                .data(token)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 }
