@@ -22,4 +22,14 @@ public class VoteRecord extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Candidate candidate;
+
+    public VoteRecord(Users user, Vote vote, Candidate candidate) {
+        this.user = user;
+        this.vote = vote;
+        this.candidate = candidate;
+    }
+
+    public void setCandidate(Candidate candidate) {
+        this.candidate = candidate;
+    }
 }

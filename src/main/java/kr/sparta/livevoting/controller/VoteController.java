@@ -1,9 +1,6 @@
 package kr.sparta.livevoting.controller;
 
-import kr.sparta.livevoting.dto.CommonResponse;
-import kr.sparta.livevoting.dto.vote.VoteInfoResponse;
-import kr.sparta.livevoting.dto.vote.VoteRequest;
-import kr.sparta.livevoting.dto.vote.VoteResponse;
+import kr.sparta.livevoting.dto.vote.*;
 import kr.sparta.livevoting.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,24 +16,42 @@ public class VoteController {
     private final VoteService voteService;
 
     @PostMapping
-    public ResponseEntity<CommonResponse<VoteResponse>> createVote(@RequestBody VoteRequest request) {
-        VoteResponse response = voteService.create(request);
+    public ResponseEntity<CreateVoteResponse> createVote(@RequestBody CreateVoteRequest request) {
+        CreateVoteResponse response = voteService.create(request);
 
-        CommonResponse<VoteResponse> body = CommonResponse.<VoteResponse>builder()
-                .data(response)
-                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(body);
+    @PostMapping("/{voteId}/vote")
+    public ResponseEntity<VotedResponse> vote(@PathVariable Long voteId, @RequestBody VoteToRequest request) {
+        VotedResponse response = voteService.voteTo(voteId, request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping
-    public ResponseEntity<CommonResponse<List<VoteInfoResponse>>> getVotes() {
+    public ResponseEntity<List<VoteInfoResponse>> getVotes() {
         List<VoteInfoResponse> votes = voteService.getVotes();
 
-        CommonResponse<List<VoteInfoResponse>> body = CommonResponse.<List<VoteInfoResponse>>builder()
-                .data(votes)
-                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(votes);
+    }
 
-        return ResponseEntity.status(HttpStatus.OK).body(body);
+    @GetMapping("/{voteId}")
+    public ResponseEntity<VoteDetailsResponse> getVoteDetails(@PathVariable Long voteId) {
+        VoteDetailsResponse response = voteService.getVoteDetails(voteId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/{voteId}/vote-record")
+    public ResponseEntity<VotedResponse> getVoteRecord(@PathVariable Long voteId, @RequestParam String voterId) {
+
+        VotedResponse response = voteService.getRecord(voteId, voterId);
+
+        if(response == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
